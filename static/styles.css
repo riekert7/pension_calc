@@ -1,0 +1,37 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    background-color: #1a1a2e;
+}
+
+.navbar-brand {
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.summary-card .display-6 {
+    color: #1a1a2e;
+    font-weight: 700;
+}
+
+.table thead {
+    background-color: #1a1a2e;
+    color: white;
+}
+
+.chart-container {
+    position: relative;
+    height: 350px;
+}
+
+.text-brand {
+    color: #1a1a2e;
+}
+
+footer {
+    color: #aaa;
+    font-size: 0.8rem;
+}

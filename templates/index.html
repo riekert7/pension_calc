@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Pension Calculator — Plan Your Retirement{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h4 mb-1 text-brand">Retirement Projection</h1>
+                <p class="text-muted small mb-4">Enter your details below to see your projected pension pot at retirement.</p>
+
+                <form method="POST" action="/calculate" novalidate>
+
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label">Current Age</label>
+                            <input type="number" name="current_age" class="form-control {% if errors and errors.current_age %}is-invalid{% endif %}"
+                                   value="{{ form_data.current_age if form_data else '' }}" placeholder="e.g. 30" min="18" max="79" required>
+                            {% if errors and errors.current_age %}
+                            <div class="invalid-feedback">{{ errors.current_age }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-6">
+                            <label class="form-label">Retirement Age</label>
+                            <input type="number" name="retirement_age" class="form-control {% if errors and errors.retirement_age %}is-invalid{% endif %}"
+                                   value="{{ form_data.retirement_age if form_data else '' }}" placeholder="e.g. 65" min="19" max="80" required>
+                            {% if errors and errors.retirement_age %}
+                            <div class="invalid-feedback">{{ errors.retirement_age }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Currency</label>
+                            <select name="currency" class="form-select">
+                                {% for code, symbol in currencies %}
+                                <option value="{{ code }}" {% if form_data and form_data.currency == code %}selected{% endif %}>
+                                    {{ symbol }} {{ code }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Current Pension Balance</label>
+                            <input type="number" name="current_balance" class="form-control {% if errors and errors.current_balance %}is-invalid{% endif %}"
+                                   value="{{ form_data.current_balance if form_data else '' }}" placeholder="e.g. 10000" min="0" step="0.01" required>
+                            {% if errors and errors.current_balance %}
+                            <div class="invalid-feedback">{{ errors.current_balance }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Annual Contribution</label>
+                            <input type="number" name="annual_contribution" class="form-control {% if errors and errors.annual_contribution %}is-invalid{% endif %}"
+                                   value="{{ form_data.annual_contribution if form_data else '' }}" placeholder="e.g. 6000" min="0" step="0.01" required>
+                            {% if errors and errors.annual_contribution %}
+                            <div class="invalid-feedback">{{ errors.annual_contribution }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Expected Annual Growth Rate (%)</label>
+                            <input type="number" name="growth_rate" class="form-control {% if errors and errors.growth_rate %}is-invalid{% endif %}"
+                                   value="{{ form_data.growth_rate if form_data else '' }}" placeholder="e.g. 7" min="0" max="30" step="0.1" required>
+                            <div class="form-text">Historical global equity average is roughly 7–10% annually.</div>
+                            {% if errors and errors.growth_rate %}
+                            <div class="invalid-feedback">{{ errors.growth_rate }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn btn-dark w-100 py-2">Calculate Projection</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <p class="text-center text-muted small mt-3">
+            Assumes annual compounding. No tax relief, employer matching, or inflation adjustment included.
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Your Retirement Projection{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 text-brand mb-0">Your Retirement Projection</h1>
+    <a href="/" class="btn btn-outline-secondary btn-sm">Recalculate</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm summary-card text-center p-3">
+            <div class="text-muted small mb-1">Final Pot</div>
+            <div class="display-6">{{ currency_symbol }}{{ "{:,.0f}".format(summary.final_balance) }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm summary-card text-center p-3">
+            <div class="text-muted small mb-1">You Contributed</div>
+            <div class="display-6">{{ currency_symbol }}{{ "{:,.0f}".format(summary.total_contributed) }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm summary-card text-center p-3">
+            <div class="text-muted small mb-1">Growth</div>
+            <div class="display-6">{{ currency_symbol }}{{ "{:,.0f}".format(summary.total_growth) }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm summary-card text-center p-3">
+            <div class="text-muted small mb-1">Years Invested</div>
+            <div class="display-6">{{ summary.years_invested }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <h2 class="h6 text-muted mb-3">Balance Over Time</h2>
+        <div class="chart-container">
+            <canvas id="projectionChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <h2 class="h6 text-muted p-4 pb-0 mb-0">Year-by-Year Breakdown</h2>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Age</th>
+                        <th>Year</th>
+                        <th>Contribution</th>
+                        <th>Total Contributed</th>
+                        <th>Growth</th>
+                        <th>Projected Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                    <tr {% if loop.last %}class="table-success fw-bold"{% endif %}>
+                        <td>{{ row.age }}</td>
+                        <td>{{ row.year }}</td>
+                        <td>{{ currency_symbol }}{{ "{:,.0f}".format(row.contribution) }}</td>
+                        <td>{{ currency_symbol }}{{ "{:,.0f}".format(row.total_contributed) }}</td>
+                        <td>{{ currency_symbol }}{{ "{:,.0f}".format(row.growth) }}</td>
+                        <td>{{ currency_symbol }}{{ "{:,.0f}".format(row.balance) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>    
+    <script>
+        const ages = {{ results | map(attribute = 'age') | list | tojson }};
+        const balances = {{ results | map(attribute = 'balance') | list | tojson }};
+        const contributed = {{ results | map(attribute = 'total_contributed') | list | tojson }};
+        const symbol = {{ currency_symbol | tojson }};
+    </script> 
+    <script src="{{ url_for('static', filename='scripts.js')}}"></script>
+{% endblock %}
